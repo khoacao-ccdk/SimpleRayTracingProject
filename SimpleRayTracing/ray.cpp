@@ -14,7 +14,6 @@ Vector3 Ray::direction() const{
 	return B;
 }
 
-Vector3 Ray::point_at_parameter(float t) {
-	Vector3 res(A + (B * t));
-	return res;
+Vector3 Ray::point_at_parameter(float t) const{
+	return origin() + (direction() * t);
 }
