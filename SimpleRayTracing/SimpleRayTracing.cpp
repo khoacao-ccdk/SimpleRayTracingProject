@@ -3,15 +3,20 @@
 // Testing Ray Tracing with a simple Ray Tracer
 //
 
-#include <iostream>
+#include <stdlib.h>
 #include <fstream>
 #include <algorithm>
 #include "Sphere.h"
 #include "HitableList.h"
+#include "Camera.h"
 
 using namespace std;
 
-const int WIDTH = 200, HEIGHT = 100;
+const int WIDTH = 200, HEIGHT = 100, S = 100;
+
+double dRand() {
+    return (double)rand() / RAND_MAX;
+}
 
 Vector3 color(const Ray& r, Hitable* world){
     hit_record rec;
@@ -40,6 +45,7 @@ int main()
     list[0] = new Sphere(Vector3(0.0f, 0.0f, -1.0f), 0.5);
     list[1] = new Sphere(Vector3(0.0f, -100.5f, -1.0f), 100);
     Hitable* world = new HitableList(list, 2);
+    Camera cam;
 
     //Start writing to PPM file
     ofstream myFile;
@@ -51,10 +57,15 @@ int main()
 
     for (int j = HEIGHT - 1; j >= 0; j--) {
         for (int i = 0; i < WIDTH; i++) {
-            float u = (float)i / (float)WIDTH;
-            float v = (float)j / (float)HEIGHT;
-            Ray r(origin, lower_left_corner + horizontal * u + vertical * v);
-            Vector3 col = color(r, world);
+            Vector3 col(0, 0, 0);
+            for (int s = 0; s < S; s++) {
+                float u = (float)(i + dRand()) / (float)WIDTH;
+                float v = (float)(j + dRand()) / (float)HEIGHT;
+                Ray r = cam.get_ray(u, v);
+                Vector3 p = r.point_at_parameter(2.0f);
+                col += color(r, world);
+            }
+            col /= (float)S;
             myFile 
                 << (int)(255.99f * col.x) << " "
                 << (int)(255.99f * col.y) << " "
