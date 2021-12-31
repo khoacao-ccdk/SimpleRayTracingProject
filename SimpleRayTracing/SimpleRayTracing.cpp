@@ -18,14 +18,24 @@ double dRand() {
     return (double)rand() / RAND_MAX;
 }
 
+//Return a point that lies within the unit sphere
+Vector3 random_point_in_unit_sphere() {
+    Vector3 p;
+    do {
+        p = Vector3(dRand(), dRand(), dRand()) * 2.0f - Vector3(1.0f, 1.0f, 1.0f);
+    } while (p.magnitude() >= 1.0f);
+    return p;
+}
+
 Vector3 color(const Ray& r, Hitable* world){
     hit_record rec;
     if (world->hit(r, 0.0, numeric_limits<float>::max(), rec)) {
-        return Vector3(rec.normal.x + 1, rec.normal.y + 1, rec.normal.z + 1) * 0.5;
+        Vector3 target = rec.p + rec.normal + random_point_in_unit_sphere();
+        return color(Ray(rec.p, target - rec.p), world) * 0.5f;
     }
     else {
         Vector3 unit_direction = r.direction().normalize();
-        float t = unit_direction.y + 1;
+        float t = (unit_direction.y + 1) * 0.5f;
         return Vector3(1.0f, 1.0f, 1.0f) * (1.0f - t) + Vector3(0.5f, 0.7f, 1.0f) * t;
     }
 }
@@ -66,6 +76,7 @@ int main()
                 col += color(r, world);
             }
             col /= (float)S;
+            col = Vector3(sqrt(col.x), sqrt(col.y), sqrt(col.z));
             myFile 
                 << (int)(255.99f * col.x) << " "
                 << (int)(255.99f * col.y) << " "

@@ -2,14 +2,13 @@
 #include <Math.h>
 
 Vector3::Vector3(){
-    x = y = z = w = 0;
+    x = y = z = 0.0f;
 }
 
 Vector3::Vector3(float X, float Y, float Z){
     x = X;
     y = Y;
     z = Z;
-    w = 0.0f;
 }
 
 Vector3 Vector3::operator*(float other){
@@ -18,7 +17,6 @@ Vector3 Vector3::operator*(float other){
     result.x = x * other;
     result.y = y * other;
     result.z = z * other;
-    result.w = w * other;
 
     return result;
 }
@@ -29,7 +27,6 @@ Vector3 Vector3::operator/(float other){
     result.x = x / other;
     result.y = y / other;
     result.z = z / other;
-    result.w = w / other;
 
     return result;
 }
@@ -40,7 +37,6 @@ Vector3& Vector3::operator*=(float other){
     x *= other;
     y *= other;
     z *= other;
-    w *= other;
 
     return result;
 }
@@ -49,7 +45,6 @@ Vector3& Vector3::operator/=(float other){
     x /= other;
     y /= other;
     z /= other;
-    w /= other;
 
     return *this;
 }
@@ -60,7 +55,6 @@ Vector3 Vector3::operator+(const Vector3& other) {
     result.x = x + other.x;
     result.y = y + other.y;
     result.z = z + other.z;
-    result.w = w + other.w;
 
     return result;
 }
@@ -71,7 +65,6 @@ Vector3 Vector3::operator-(const Vector3& other) {
     result.x = x - other.x;
     result.y = y - other.y;
     result.z = z - other.z;
-    result.w = w - other.w;
 
     return result;
 }
@@ -80,7 +73,6 @@ Vector3& Vector3::operator+=(const Vector3& other){
     x += other.x;
     y += other.y;
     z += other.z;
-    w += other.w;
 
     return *this;
 }
@@ -89,7 +81,6 @@ Vector3& Vector3::operator-=(const Vector3& other){
     x -= other.x;
     y -= other.y;
     z -= other.z;
-    w -= other.w;
 
     return *this;
 }

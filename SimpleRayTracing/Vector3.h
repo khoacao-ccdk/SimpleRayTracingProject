@@ -6,7 +6,7 @@
 #define Vector3_H
 
 struct Vector3 {
-	float x, y, z, w;
+	float x, y, z;
 
 	Vector3();
 	Vector3(float X, float Y, float Z);
