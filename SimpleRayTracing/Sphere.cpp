@@ -3,9 +3,10 @@
 
 Sphere::Sphere() {};
 
-Sphere::Sphere(Vector3 pCenter, float pR) {
+Sphere::Sphere(Vector3 pCenter, float pR, Material *m) {
 	radius = pR;
 	center = pCenter;
+    mat_ptr = m;
 }
 
 bool Sphere::hit(const Ray& r, float t_min, float t_max, hit_record& rec) const{
@@ -21,6 +22,7 @@ bool Sphere::hit(const Ray& r, float t_min, float t_max, hit_record& rec) const{
             rec.t = t;
             rec.p = r.point_at_parameter(t);
             rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = mat_ptr;
             return true;
         }
 
@@ -29,6 +31,7 @@ bool Sphere::hit(const Ray& r, float t_min, float t_max, hit_record& rec) const{
             rec.t = t;
             rec.p = r.point_at_parameter(t);
             rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = mat_ptr;
             return true;
         }
     }

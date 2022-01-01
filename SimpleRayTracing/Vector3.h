@@ -10,23 +10,24 @@ struct Vector3 {
 
 	Vector3();
 	Vector3(float X, float Y, float Z);
-	Vector3 operator*(float other);
-	Vector3 operator/(float other);
+	Vector3 operator*(float other) const;
+	Vector3 operator/(float other) const;
 	Vector3& operator*=(float other);
 	Vector3& operator/=(float other);
-
-	Vector3 operator+(const Vector3& other);
-	Vector3 operator-(const Vector3& other);
+	Vector3 operator+(const Vector3& other) const;
+	Vector3 operator-(const Vector3& other) const;
+	Vector3 operator*(const Vector3& other) const;
 	Vector3& operator+=(const Vector3& other);
-	Vector3&operator-=(const Vector3& other);
+	Vector3& operator-=(const Vector3& other);
+	Vector3& operator*=(const Vector3& other);
 
 	float magnitude();
 	Vector3 normalize();
 	
 };
 
-float dot(Vector3& a, Vector3& b);
-Vector3 cross(Vector3& a, Vector3& b);
-inline Vector3 Bisector(Vector3 a, Vector3 b);
+float dot(const Vector3& a, const Vector3& b);
+Vector3 cross(const Vector3& a, const Vector3& b);
+inline Vector3 Bisector(const Vector3& a, const Vector3& b);
 
 #endif

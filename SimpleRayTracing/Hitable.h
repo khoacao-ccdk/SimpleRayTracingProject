@@ -1,19 +1,19 @@
 #ifndef Hitable_H
 #define Hitable_H
+#include "Ray.h"
+
+class Material;
 
 /*
 * Abstract class hitable
 * Define the hitable property of the objects that are capable of reflecting light rays off its surface
 * A struct hit record is implemented to keep the paths that the light goes through to figure out the resulting light
 */
-
-#include "Vector3.h"
-#include "Ray.h"
-
 struct hit_record {
 	float t;
 	Vector3 p;
 	Vector3 normal;
+	Material *mat_ptr;
 };
 
 class Hitable {

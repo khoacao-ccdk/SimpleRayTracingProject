@@ -11,7 +11,7 @@ Vector3::Vector3(float X, float Y, float Z){
     z = Z;
 }
 
-Vector3 Vector3::operator*(float other){
+Vector3 Vector3::operator*(float other) const{
     Vector3 result;
 
     result.x = x * other;
@@ -21,7 +21,7 @@ Vector3 Vector3::operator*(float other){
     return result;
 }
 
-Vector3 Vector3::operator/(float other){
+Vector3 Vector3::operator/(float other) const{
     Vector3 result;
 
     result.x = x / other;
@@ -49,7 +49,7 @@ Vector3& Vector3::operator/=(float other){
     return *this;
 }
 
-Vector3 Vector3::operator+(const Vector3& other) {
+Vector3 Vector3::operator+(const Vector3& other) const{
     Vector3 result;
 
     result.x = x + other.x;
@@ -59,12 +59,22 @@ Vector3 Vector3::operator+(const Vector3& other) {
     return result;
 }
 
-Vector3 Vector3::operator-(const Vector3& other) {
+Vector3 Vector3::operator-(const Vector3& other) const{
     Vector3 result;
 
     result.x = x - other.x;
     result.y = y - other.y;
     result.z = z - other.z;
+
+    return result;
+}
+
+Vector3 Vector3::operator*(const Vector3& other) const {
+    Vector3 result;
+
+    result.x = x * other.x;
+    result.y = y * other.y;
+    result.z = z * other.z;
 
     return result;
 }
@@ -85,6 +95,14 @@ Vector3& Vector3::operator-=(const Vector3& other){
     return *this;
 }
 
+Vector3& Vector3::operator*=(const Vector3& other) {
+    x *= other.x;
+    y *= other.y;
+    z *= other.z;
+
+    return *this;
+}
+
 float Vector3::magnitude(){
     return (float)sqrt((x * x) + (y * y) + (z * z));
 }
@@ -94,8 +112,8 @@ Vector3 Vector3::normalize(){
     return result;
 }
 
-float dot(Vector3& a, Vector3& b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+float dot(const Vector3& a, const Vector3& b) {
+    return (float)(a.x * b.x + a.y * b.y + a.z * b.z);
 }
 
 /*
@@ -107,7 +125,7 @@ azbx
 axby
 - aybx
 */
-Vector3 cross(Vector3& a, Vector3& b){
+Vector3 cross(const Vector3& a, const Vector3& b){
     Vector3 result;
 
     result.x = a.y * b.z - a.z * b.y;
@@ -117,6 +135,7 @@ Vector3 cross(Vector3& a, Vector3& b){
     return result;
 }
 
-Vector3 Bisector(Vector3 a, Vector3 b) {
-    return (a + b) / (a + b).magnitude();
+Vector3 Bisector(const Vector3& a, const Vector3& b) {
+    Vector3 result = a + b;
+    return result.normalize();
 }

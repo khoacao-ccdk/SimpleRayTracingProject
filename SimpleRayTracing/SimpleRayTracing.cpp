@@ -3,39 +3,32 @@
 // Testing Ray Tracing with a simple Ray Tracer
 //
 
-#include <stdlib.h>
+#include <iostream>
 #include <fstream>
 #include <algorithm>
 #include "Sphere.h"
 #include "HitableList.h"
 #include "Camera.h"
+#include "Material.h"
 
 using namespace std;
 
 const int WIDTH = 200, HEIGHT = 100, S = 100;
 
-double dRand() {
-    return (double)rand() / RAND_MAX;
-}
-
-//Return a point that lies within the unit sphere
-Vector3 random_point_in_unit_sphere() {
-    Vector3 p;
-    do {
-        p = Vector3(dRand(), dRand(), dRand()) * 2.0f - Vector3(1.0f, 1.0f, 1.0f);
-    } while (p.magnitude() >= 1.0f);
-    return p;
-}
-
-Vector3 color(const Ray& r, Hitable* world){
+Vector3 color(const Ray& r, Hitable *world, int depth){
     hit_record rec;
-    if (world->hit(r, 0.0, numeric_limits<float>::max(), rec)) {
-        Vector3 target = rec.p + rec.normal + random_point_in_unit_sphere();
-        return color(Ray(rec.p, target - rec.p), world) * 0.5f;
+    if (world->hit(r, 0.001, numeric_limits<float>::max(), rec)) {
+        Ray scattered;
+        Vector3 attenuation;
+        
+        if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+            return attenuation * color(scattered, world, depth + 1);
+        else
+            return Vector3(0.0f, 0.0f, 0.0f);
     }
     else {
         Vector3 unit_direction = r.direction().normalize();
-        float t = (unit_direction.y + 1) * 0.5f;
+        float t = (unit_direction.y + 1.0) * 0.5f;
         return Vector3(1.0f, 1.0f, 1.0f) * (1.0f - t) + Vector3(0.5f, 0.7f, 1.0f) * t;
     }
 }
@@ -51,10 +44,12 @@ int main()
     Vector3 vertical(0.0f, 2.0f, 0.0f);
     Vector3 origin(0.0f, 0.0f, 0.0f);
 
-    Hitable* list[2];
-    list[0] = new Sphere(Vector3(0.0f, 0.0f, -1.0f), 0.5);
-    list[1] = new Sphere(Vector3(0.0f, -100.5f, -1.0f), 100);
-    Hitable* world = new HitableList(list, 2);
+    Hitable* list[4];
+    list[0] = new Sphere(Vector3(0.0f, 0.0f, -1.0f), 0.5, new Lambertian(Vector3(0.8f, 0.3f, 0.3f)));
+    list[1] = new Sphere(Vector3(0.0f, -100.5f, -1.0f), 100, new Lambertian(Vector3(0.8f, 0.8f, 0.0f)));
+    list[2] = new Sphere(Vector3(1.0f, 0.0f, -1.0f), 0.5, new Metal(Vector3(0.8f, 0.6f, 0.2f), 0.3f));
+    list[3] = new Sphere(Vector3(-1.0f, 0.0f, -1.0f), 0.5, new Metal(Vector3(0.8f, 0.8f, 0.8f), 0.1f));
+    Hitable* world = new HitableList(list, 4);
     Camera cam;
 
     //Start writing to PPM file
@@ -73,7 +68,7 @@ int main()
                 float v = (float)(j + dRand()) / (float)HEIGHT;
                 Ray r = cam.get_ray(u, v);
                 Vector3 p = r.point_at_parameter(2.0f);
-                col += color(r, world);
+                col += color(r, world, 0);
             }
             col /= (float)S;
             col = Vector3(sqrt(col.x), sqrt(col.y), sqrt(col.z));
