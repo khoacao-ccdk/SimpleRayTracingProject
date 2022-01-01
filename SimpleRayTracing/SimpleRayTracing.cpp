@@ -44,12 +44,13 @@ int main()
     Vector3 vertical(0.0f, 2.0f, 0.0f);
     Vector3 origin(0.0f, 0.0f, 0.0f);
 
-    Hitable* list[4];
-    list[0] = new Sphere(Vector3(0.0f, 0.0f, -1.0f), 0.5, new Lambertian(Vector3(0.8f, 0.3f, 0.3f)));
+    Hitable* list[5];
+    list[0] = new Sphere(Vector3(0.0f, 0.0f, -1.0f), 0.5, new Lambertian(Vector3(0.1f, 0.2f, 0.5f)));
     list[1] = new Sphere(Vector3(0.0f, -100.5f, -1.0f), 100, new Lambertian(Vector3(0.8f, 0.8f, 0.0f)));
     list[2] = new Sphere(Vector3(1.0f, 0.0f, -1.0f), 0.5, new Metal(Vector3(0.8f, 0.6f, 0.2f), 0.3f));
-    list[3] = new Sphere(Vector3(-1.0f, 0.0f, -1.0f), 0.5, new Metal(Vector3(0.8f, 0.8f, 0.8f), 0.1f));
-    Hitable* world = new HitableList(list, 4);
+    list[3] = new Sphere(Vector3(-1.0f, 0.0f, -1.0f), 0.5, new Dielectric(1.5));
+    list[4] = new Sphere(Vector3(-1.0f, 0.0f, -1.0f), -0.45f, new Dielectric(1.5));
+    Hitable* world = new HitableList(list, 5);
     Camera cam;
 
     //Start writing to PPM file

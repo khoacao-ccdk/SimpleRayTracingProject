@@ -11,6 +11,16 @@ Vector3::Vector3(float X, float Y, float Z){
     z = Z;
 }
 
+Vector3 Vector3::operator-() const {
+    Vector3 result;
+
+    result.x = -x;
+    result.y = -y;
+    result.z = -z;
+
+    return result;
+}
+
 Vector3 Vector3::operator*(float other) const{
     Vector3 result;
 
@@ -103,11 +113,11 @@ Vector3& Vector3::operator*=(const Vector3& other) {
     return *this;
 }
 
-float Vector3::magnitude(){
+float Vector3::magnitude() const{
     return (float)sqrt((x * x) + (y * y) + (z * z));
 }
 
-Vector3 Vector3::normalize(){
+Vector3 Vector3::normalize() const{
     Vector3 result = *this / magnitude();
     return result;
 }

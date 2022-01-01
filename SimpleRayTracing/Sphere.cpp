@@ -17,7 +17,8 @@ bool Sphere::hit(const Ray& r, float t_min, float t_max, hit_record& rec) const{
     float c = dot(oc, oc) - radius * radius;
     float discriminant = b * b - a * c;
     if (discriminant > 0) {
-        float t = (-b - sqrt(b * b - a * c)) / a;
+        float temp = sqrt(b * b - a * c);
+        float t = (-b - temp) / a;
         if (t_min < t && t < t_max) {
             rec.t = t;
             rec.p = r.point_at_parameter(t);
@@ -26,7 +27,7 @@ bool Sphere::hit(const Ray& r, float t_min, float t_max, hit_record& rec) const{
             return true;
         }
 
-        t = (-b + sqrt(b * b - a * c)) / a;
+        t = (-b + temp) / a;
         if (t_min < t && t < t_max) {
             rec.t = t;
             rec.p = r.point_at_parameter(t);
