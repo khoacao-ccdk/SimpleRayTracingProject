@@ -13,7 +13,7 @@
 
 using namespace std;
 
-const int WIDTH = 200, HEIGHT = 100, S = 100;
+const int WIDTH = 1200, HEIGHT = 800, S = 10;
 
 Vector3 color(const Ray& r, Hitable *world, int depth){
     hit_record rec;
@@ -33,6 +33,48 @@ Vector3 color(const Ray& r, Hitable *world, int depth){
     }
 }
 
+//Construct a dRandom scene with Spheres
+Hitable* random_scene() {
+    int n = 500;
+    Hitable** list = new Hitable * [n + 1];
+    list[0] = new Sphere(Vector3(0, -1000, 0), 1000, new Lambertian(Vector3(0.5, 0.5, 0.5)));
+    int i = 1;
+    for (int a = -11; a < 11; a++) {
+        for (int b = -11; b < 11; b++) {
+            float choose_mat = dRand();
+            Vector3 center(a + 0.9 * dRand(), 0.2, b + 0.9 * dRand());
+            if ((center - Vector3(4, 0.2, 0)).magnitude() > 0.9) {
+                if (choose_mat < 0.8) {  // diffuse
+                    list[i++] = new Sphere(
+                        center, 0.2,
+                        new Lambertian(Vector3(dRand() * dRand(),
+                            dRand() * dRand(),
+                            dRand() * dRand()))
+                    );
+                }
+                else if (choose_mat < 0.95) { // metal
+                    list[i++] = new Sphere(
+                        center, 0.2,
+                        new Metal(Vector3(0.5 * (1 + dRand()),
+                            0.5 * (1 + dRand()),
+                            0.5 * (1 + dRand())),
+                            0.5 * dRand())
+                    );
+                }
+                else {  // glass
+                    list[i++] = new Sphere(center, 0.2, new Dielectric(1.5));
+                }
+            }
+        }
+    }
+
+    list[i++] = new Sphere(Vector3(0, 1, 0), 1.0, new Dielectric(1.5));
+    list[i++] = new Sphere(Vector3(-4, 1, 0), 1.0, new Lambertian(Vector3(0.4, 0.2, 0.1)));
+    list[i++] = new Sphere(Vector3(4, 1, 0), 1.0, new Metal(Vector3(0.7, 0.6, 0.5), 0.0));
+
+    return new HitableList(list, i);
+}
+
 /*
 * Main function
 * Include write to PPM functionality to test the ray tracer
@@ -44,14 +86,14 @@ int main()
     Vector3 vertical(0.0f, 2.0f, 0.0f);
     Vector3 origin(0.0f, 0.0f, 0.0f);
 
-    Hitable* list[5];
-    list[0] = new Sphere(Vector3(0.0f, 0.0f, -1.0f), 0.5, new Lambertian(Vector3(0.1f, 0.2f, 0.5f)));
-    list[1] = new Sphere(Vector3(0.0f, -100.5f, -1.0f), 100, new Lambertian(Vector3(0.8f, 0.8f, 0.0f)));
-    list[2] = new Sphere(Vector3(1.0f, 0.0f, -1.0f), 0.5, new Metal(Vector3(0.8f, 0.6f, 0.2f), 0.3f));
-    list[3] = new Sphere(Vector3(-1.0f, 0.0f, -1.0f), 0.5, new Dielectric(1.5));
-    list[4] = new Sphere(Vector3(-1.0f, 0.0f, -1.0f), -0.45f, new Dielectric(1.5));
-    Hitable* world = new HitableList(list, 5);
-    Camera cam;
+    Hitable* world = random_scene();
+
+    //Camera construction
+    Vector3 eye(13.0f, 2.0f, 3.0f);
+    Vector3 spot(0.0f, 0.0f, 0.0f);
+    float distToFocus = 10.0;
+    float aperture = 0.1f;
+    Camera cam(eye, spot, Vector3(0.0f, 1.0f, 0.0f), 20.0f, float (WIDTH) / float (HEIGHT), aperture, distToFocus);
 
     //Start writing to PPM file
     ofstream myFile;
